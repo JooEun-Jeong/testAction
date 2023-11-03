@@ -30,7 +30,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "${CHANNEL_NAME}", "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
+              "channel":  $CHANNEL_NAME, "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
             }
       - run: |
           echo "channel name! : $CHANNEL_NAME"
@@ -98,7 +98,7 @@ jobs:
           GITHUB_REPO_URL=$(echo "${GITHUB_REPO_URL_w:7:-1}")
 
           chmod +x tools/alertFailure.sh
-          tools/alertFailure.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{github.event.inputs.channel_name}}"
+          tools/alertFailure.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{secrets.CHANNEL_NAME}}"
 
   alert_deploy_success:
     if: ${{ success() }} # 이전의 job이 성공했을 경우 실행됨
@@ -130,7 +130,7 @@ jobs:
           GITHUB_REPO_URL=$(echo "${GITHUB_REPO_URL_w:7:-1}")
 
           chmod +x tools/alertSuccess.sh
-          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{github.event.inputs.channel_name}}"
+          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{secrets.CHANNEL_NAME}}"
 
   ## below code is from .github/releaseAction.yml and modified
   ## name: Release Tag
