@@ -32,8 +32,10 @@ jobs:
             {
               "channel":  "#${{env.CHANNEL_NAME}}", "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
             }
-      - run: |
-          echo "channel name! : $CHANNEL_NAME"
+      - env:
+          CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
+        run: |
+          echo "channel name! : #${{env.CHANNEL_NAME}}"
 
   docker-ssh-deploy:
     runs-on: ubuntu-latest
@@ -92,13 +94,14 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_REPO: ${{ toJson(github) }}
+          SLACK_CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
         run: |
           GITHUB_REPO_URL_w=$(echo $GITHUB_REPO | jq '.repositoryUrl')
           # "와 git:// 삭제
           GITHUB_REPO_URL=$(echo "${GITHUB_REPO_URL_w:7:-1}")
 
           chmod +x tools/alertFailure.sh
-          tools/alertFailure.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{secrets.CHANNEL_NAME}}"
+          tools/alertFailure.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{env.SLACK_CHANNEL_NAME}}"
 
   alert_deploy_success:
     if: ${{ success() }} # 이전의 job이 성공했을 경우 실행됨
@@ -123,6 +126,7 @@ jobs:
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
           GITHUB_REPO: ${{ toJson(github) }}
         run: |
           GITHUB_REPO_URL_w=$(echo $GITHUB_REPO | jq '.repositoryUrl')
@@ -130,7 +134,7 @@ jobs:
           GITHUB_REPO_URL=$(echo "${GITHUB_REPO_URL_w:7:-1}")
 
           chmod +x tools/alertSuccess.sh
-          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{secrets.CHANNEL_NAME}}"
+          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{env.SLACK_CHANNEL_NAME}}"
 
   ## below code is from .github/releaseAction.yml and modified
   ## name: Release Tag
