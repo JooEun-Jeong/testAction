@@ -3,15 +3,15 @@ name: Auto Deploy & Alert Deploy Status & Release Tag
 on:
   pull_request:
     types: ["closed"]
-  workflow_dispatch:
-    inputs:
-      channel_name:
-        description: "The name of slack channel you will get messages: "
-        required: true
-      docker_image_name:
-        description: "docker image name that you defined :"
-        required: true
-        default: "app"
+  # workflow_dispatch:
+  #   inputs:
+  #     channel_name:
+  #       description: "The name of slack channel you will get messages: "
+  #       required: true
+  #     docker_image_name:
+  #       description: "docker image name that you defined :"
+  #       required: true
+  #       default: "app"
 
 # job is triggered only when PR is closed and merged to the 'main' branch
 jobs:
@@ -24,15 +24,16 @@ jobs:
       - name: prepare for a slack-send environment
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+          CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
         with:
           payload: |
             {
-              "channel": "#${{github.event.inputs.channel_name}}", "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
+              "channel": "#$CHANNEL_NAME", "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
       - run: |
-          echo "channel name! : ${{github.event.inputs.channel_name}}"
+          echo "channel name! : $CHANNEL_NAME"
 
   docker-ssh-deploy:
     runs-on: ubuntu-latest
@@ -53,7 +54,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/${{github.event.inputs.docker_image_name}}:latest # 현재 도커허브 유저네임과 이미지명이 고정이지만 추후에 바꿀수 있도록 변경할것입니다.
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/app:latest # 현재 도커허브 유저네임과 이미지명이 고정이지만 추후에 바꿀수 있도록 변경할것입니다.
       - name: executing remote ssh commands using key # SSH 를 통해 리모트 서버로 접속하고 docker-compose 를 이용해 디플로이하는 스탭입니다.
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -64,7 +65,7 @@ jobs:
           script: |
             cd ~
             docker-compose down
-            docker image rm ${{secrets.DOCKERHUB_USERNAME}}/${{github.event.inputs.docker_image_name}}:latest
+            docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
             docker-compose up -d
 
   alert_deploy_failed:
