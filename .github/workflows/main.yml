@@ -30,7 +30,7 @@ jobs:
         with:
           payload: |
             {
-              "channel":  $CHANNEL_NAME, "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
+              "channel":  '$CHANNEL_NAME', "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
             }
       - run: |
           echo "channel name! : $CHANNEL_NAME"
