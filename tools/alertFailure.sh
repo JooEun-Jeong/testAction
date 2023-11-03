@@ -6,7 +6,8 @@ SLACK_CHANNEL_NAME=$4
 
 MESSAGE="Deploy Failed!
 Tried to update: ${PR_CONTENT}
-Repo: ${REPO_URL}"
+Repo: ${REPO_URL}  
+slack channel: ${SLACK_CHANNEL_NAME}"
 
 echo $MESSAGE
 # 슬랙 채널로 메시지 요청
