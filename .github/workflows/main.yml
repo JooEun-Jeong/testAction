@@ -31,6 +31,8 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+      - run: |
+          echo "channel name! : ${{github.event.inputs.channel_name}}"
 
   docker-ssh-deploy:
     runs-on: ubuntu-latest
