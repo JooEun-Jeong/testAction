@@ -66,6 +66,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ~
+            ls -al
             docker-compose down
             docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
             docker-compose up -d
