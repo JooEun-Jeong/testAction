@@ -26,16 +26,12 @@ jobs:
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-          CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
+          CHANNEL_NAME: ${{vars.CHANNEL_NAME}}
         with:
           payload: |
             {
               "channel":  "#${{env.CHANNEL_NAME}}", "username": "Alert Manager", "text": "*===UPDATE ALARM===*", "icon_emoji": ":seal:"
             }
-      - env:
-          CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
-        run: |
-          echo "channel name! : #${{env.CHANNEL_NAME}}"
 
   docker-ssh-deploy:
     runs-on: ubuntu-latest
@@ -67,9 +63,9 @@ jobs:
           script: |
             cd ~
             ls -al
-            docker-compose down
+            docker compose down
             docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
-            docker-compose up -d
+            docker compose up -d
 
   alert_deploy_failed:
     if: ${{ failure() }} # 이전의 job이 실패했을 경우 실행됨
@@ -94,7 +90,7 @@ jobs:
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
+          SLACK_CHANNEL_NAME: ${{vars.CHANNEL_NAME}}
           GITHUB_REPO: ${{ toJson(github) }}
         run: |
           GITHUB_REPO_URL_w=$(echo $GITHUB_REPO | jq '.repositoryUrl')
@@ -127,7 +123,7 @@ jobs:
         shell: bash
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_CHANNEL_NAME: ${{secrets.CHANNEL_NAME}}
+          SLACK_CHANNEL_NAME: ${{vars.CHANNEL_NAME}}
           GITHUB_REPO: ${{ toJson(github) }}
         run: |
           GITHUB_REPO_URL_w=$(echo $GITHUB_REPO | jq '.repositoryUrl')
