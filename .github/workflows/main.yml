@@ -61,11 +61,11 @@ jobs:
           key: ${{ secrets.AWS_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ~
+            cd ~/testAction
             docker image ls
             docker compose down
-            docker compose up -d
             docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
+            docker compose up -d
 
   alert_deploy_failed:
     if: ${{ failure() }} # 이전의 job이 실패했을 경우 실행됨
