@@ -134,7 +134,7 @@ jobs:
           GITHUB_REPO_URL=$(echo "${GITHUB_REPO_URL_w:7:-1}")
 
           chmod +x tools/alertSuccess.sh
-          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" ${GITHUB_REPO_URL} "${{ steps.pr_info.outputs.pull_request_title }} ${{env.SLACK_CHANNEL_NAME}}"
+          tools/alertSuccess.sh "$SLACK_WEBHOOK_URL" "${GITHUB_REPO_URL}" "${{ steps.pr_info.outputs.pull_request_title }}" "${{env.SLACK_CHANNEL_NAME}}"
 
   ## below code is from .github/releaseAction.yml and modified
   ## name: Release Tag
