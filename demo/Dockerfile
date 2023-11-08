@@ -1,7 +1,7 @@
 FROM node:latest
 WORKDIR /app
-COPY /demo/package*.json ./
+COPY ./package*.json ./
 RUN npm install
-COPY /demo .
+COPY . .
 CMD [ "node", "app.js" ]
 EXPOSE 3000

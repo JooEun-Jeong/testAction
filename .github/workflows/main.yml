@@ -62,10 +62,10 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ~/testAction
-            docker image ls
-            docker compose down
-            docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
-            docker compose up -d
+            git pull
+            docker compose up app -d --build
+            # docker image rm ${{secrets.DOCKERHUB_USERNAME}}/app:latest
+            # docker compose up -d
 
   alert_deploy_failed:
     if: ${{ failure() }} # 이전의 job이 실패했을 경우 실행됨
