@@ -6,4 +6,4 @@ services:
     build:
       context: ./demo/
     ports:
-      - "1234:3000"
+      - "3000:3000"
