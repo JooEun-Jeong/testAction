@@ -50,7 +50,7 @@ jobs:
       - name: Build and push # Dockerfile의 내용을 이용해 이미지를 빌드합니다.
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./demo/
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/app:latest # 현재 도커허브 유저네임과 이미지명이 고정이지만 추후에 바꿀수 있도록 변경할것입니다.
       - name: executing remote ssh commands using key # SSH 를 통해 리모트 서버로 접속하고 docker-compose 를 이용해 디플로이하는 스탭입니다.
